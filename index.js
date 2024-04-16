@@ -1,20 +1,66 @@
-fetch("main.json")
-      .then(Response => Response.json() )
-      .then(value => console.log(value))
-      .catch(error=> console.error(error));
-      const url = 'https://imdb8.p.rapidapi.com/v2/search?searchTerm=tom%20cruise&type=NAME&first=20';
-      const options = {
-          method: 'GET',
-          headers: {
-              'X-RapidAPI-Key': '3d7a0b826emsh85cceaab2cabd34p1d8371jsna958252a738f',
-              'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
-          }
-      };
-      
-      try {
-          const response = await fetch(url, options);
-          const result = await response.text();
-          console.log(result);
-      } catch (error) {
-          console.error(error);
-      }    
+ 
+ // script.js
+document.addEventListener('DOMContentLoaded', function () {
+    const movieList = document.getElementById('movie-list');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    let allMovies = []; // Array to store all movie data
+
+    // Function to render movies based on the provided data
+    function renderMovies(movies) {
+        // Clear previous movie list
+        movieList.innerHTML = '';
+
+        // Render movies
+        movies.forEach(movie => {
+            const movieElement = document.createElement('div');
+            movieElement.classList.add('movie');
+
+            const title = document.createElement('h2');
+            title.textContent = movie.title;
+            movieElement.appendChild(title);
+
+            const genre = document.createElement('p');
+            genre.textContent = `Genre: ${movie.genre}`;
+            movieElement.appendChild(genre);
+
+            const year = document.createElement('p');
+            year.textContent = `Year: ${movie.year}`;
+            movieElement.appendChild(year);
+
+            movieList.appendChild(movieElement);
+        });
+    }
+
+    // Fetch data from main.json
+    fetch('main.json')
+        .then(response => response.json())
+        .then(data => {
+            allMovies = data; // Store all movie data
+            renderMovies(allMovies); // Initial rendering of all movies
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    // Event listener for search button click
+    searchButton.addEventListener('click', function () {
+        const searchQuery = searchInput.value.trim().toLowerCase(); // Get search query
+        if (searchQuery !== '') {
+            // Filter movies based on search query
+            const filteredMovies = allMovies.filter(movie => {
+                return movie.title.toLowerCase().includes(searchQuery); // Check if movie title contains search query
+            });
+            // Render filtered movies
+            renderMovies(filteredMovies);
+        } else {
+            // If search query is empty, render all movies
+            renderMovies(allMovies);
+        }
+    });
+
+    // Event listener for input field (for pressing Enter key)
+    searchInput.addEventListener('keyup', function (event) {
+        if (event.key === 'Enter') {
+            searchButton.click(); // Trigger search button click event
+        }
+    });
+});
