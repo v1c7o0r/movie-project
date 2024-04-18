@@ -1,66 +1,50 @@
- 
- // script.js
-document.addEventListener('DOMContentLoaded', function () {
-    const movieList = document.getElementById('movie-list');
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
-    let allMovies = []; // Array to store all movie data
+/**
+ * navbar variables
+ */
 
-    // Function to render movies based on the provided data
-    function renderMovies(movies) {
-        // Clear previous movie list
-        movieList.innerHTML = '';
+const navOpenBtn = document.querySelector("[data-menu-open-btn]");
+const navCloseBtn = document.querySelector("[data-menu-close-btn]");
+const navbar = document.querySelector("[data-navbar]");
+const overlay = document.querySelector("[data-overlay]");
 
-        // Render movies
-        movies.forEach(movie => {
-            const movieElement = document.createElement('div');
-            movieElement.classList.add('movie');
+const navElemArr = [navOpenBtn, navCloseBtn, overlay];
 
-            const title = document.createElement('h2');
-            title.textContent = movie.title;
-            movieElement.appendChild(title);
+for (let i = 0; i < navElemArr.length; i++) {
 
-            const genre = document.createElement('p');
-            genre.textContent = `Genre: ${movie.genre}`;
-            movieElement.appendChild(genre);
+  navElemArr[i].addEventListener("click", function () {
 
-            const year = document.createElement('p');
-            year.textContent = `Year: ${movie.year}`;
-            movieElement.appendChild(year);
+    navbar.classList.toggle("active");
+    overlay.classList.toggle("active");
+    document.body.classList.toggle("active");
 
-            movieList.appendChild(movieElement);
-        });
-    }
+  });
 
-    // Fetch data from main.json
-    fetch('main.json')
-        .then(response => response.json())
-        .then(data => {
-            allMovies = data; // Store all movie data
-            renderMovies(allMovies); // Initial rendering of all movies
-        })
-        .catch(error => console.error('Error fetching data:', error));
+}
 
-    // Event listener for search button click
-    searchButton.addEventListener('click', function () {
-        const searchQuery = searchInput.value.trim().toLowerCase(); // Get search query
-        if (searchQuery !== '') {
-            // Filter movies based on search query
-            const filteredMovies = allMovies.filter(movie => {
-                return movie.title.toLowerCase().includes(searchQuery); // Check if movie title contains search query
-            });
-            // Render filtered movies
-            renderMovies(filteredMovies);
-        } else {
-            // If search query is empty, render all movies
-            renderMovies(allMovies);
-        }
-    });
 
-    // Event listener for input field (for pressing Enter key)
-    searchInput.addEventListener('keyup', function (event) {
-        if (event.key === 'Enter') {
-            searchButton.click(); // Trigger search button click event
-        }
-    });
+
+/**
+ * header sticky
+ */
+
+const header = document.querySelector("[data-header]");
+
+window.addEventListener("scroll", function () {
+
+  window.scrollY >= 10 ? header.classList.add("active") : header.classList.remove("active");
+
+});
+
+
+
+/**
+ * go top
+ */
+
+const goTopBtn = document.querySelector("[data-go-top]");
+
+window.addEventListener("scroll", function () {
+
+  window.scrollY >= 500 ? goTopBtn.classList.add("active") : goTopBtn.classList.remove("active");
+
 });
